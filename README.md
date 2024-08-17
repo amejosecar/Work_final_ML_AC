@@ -12,7 +12,7 @@
 Para clonar este repositorio por https:
 
 ```
- 📑 git clone [https://github.com/IraitzM/TheBridge_DSPT_ML](https://github.com/amejosecar/Work_final_ML_AC.git)
+ 📑 git clone [https://github.com/amejosecar/Work_final_ML_AC]
 ```
 
 
