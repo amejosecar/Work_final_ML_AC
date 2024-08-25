@@ -1,4 +1,4 @@
-# Trabajo final del modulo Machine Learning Bootcamp Lanbide-BBK 2024
+# Trabajo final del modulo Machine Learning
  Bootcamp Lanbide-BBK 2024
 
 🏋🏻‍♀️ Este es el trabajo final del modulo Machine learning en The Bridge, del programa bootcamp 2024 de BBK y Lanbide. 
