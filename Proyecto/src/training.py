@@ -1,36 +1,42 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-import joblib
 import os
+import pickle
 
-def train_model(input_path, model_output_path):
+def train_model():
     # Cargar los datos procesados
-    df = pd.read_csv(os.path.join(input_path, 'df_train_proce.csv'))
+    df_train = pd.read_csv("../data/processed/df_train_processed.csv")
+    df_test = pd.read_csv("../data/processed/df_test_processed.csv")
 
-    # Separación de características y variable objetivo
-    X = df.drop('price_range', axis=1)
-    y = df['price_range']
+    # Separar características y target
+    X = df_train.drop('price_range', axis=1)
+    y = df_train['price_range']
 
-    # División en conjuntos de entrenamiento y prueba
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # Escalar las características
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    X_test_scaled = scaler.transform(df_test)
 
-    # Entrenamiento del modelo
-    model = RandomForestClassifier(random_state=42)
+    # División de los datos de entrenamiento y validación
+    X_train, X_val, y_train, y_val = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+    # Entrenar el modelo
+    model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42)
     model.fit(X_train, y_train)
 
     # Guardar el modelo entrenado
-    joblib.dump(model, os.path.join(model_output_path, 'random_forest_model.pkl'))
-    print(f"Modelo guardado en {model_output_path}")
+    os.makedirs("../models", exist_ok=True)
+    with open("../models/random_forest_model.pkl", "wb") as model_file:
+        pickle.dump(model, model_file)
 
-    # Guardar los datasets de entrenamiento y prueba
-    X_train.to_csv(os.path.join(model_output_path, 'X_train.csv'), index=False)
-    X_test.to_csv(os.path.join(model_output_path, 'X_test.csv'), index=False)
-    y_train.to_csv(os.path.join(model_output_path, 'y_train.csv'), index=False)
-    y_test.to_csv(os.path.join(model_output_path, 'y_test.csv'), index=False)
-    print(f"Datasets guardados en {model_output_path}")
+    # Guardar los datasets utilizados en el entrenamiento
+    pd.DataFrame(X_train).to_csv("../data/processed/X_train.csv", index=False)
+    pd.DataFrame(X_val).to_csv("../data/processed/X_val.csv", index=False)
+    pd.DataFrame(X_test_scaled).to_csv("../data/processed/X_test.csv", index=False)
+    pd.DataFrame(y_train).to_csv("../data/processed/y_train.csv", index=False)
+    pd.DataFrame(y_val).to_csv("../data/processed/y_val.csv", index=False)
 
 if __name__ == "__main__":
-    input_path = "../data/processed"
-    model_output_path = "../data/train"
-    train_model(input_path, model_output_path)
+    train_model()

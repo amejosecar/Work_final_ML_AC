@@ -1,18 +1,20 @@
 import pandas as pd
 import os
 
-def process_data(input_path, output_path):
-    # Cargar los datos en bruto
-    df_raw = pd.read_csv(os.path.join(input_path, 'train.csv'))
-
-    # Procesamiento de datos (ejemplo: normalización, eliminación de NaN, etc.)
-    df_processed = df_raw.dropna()  # Ejemplo sencillo, elimina filas con NaN
-
+def process_data():
+    # Cargar los datos crudos
+    df_train = pd.read_csv("../data/raw/train.csv")
+    df_test = pd.read_csv("../data/raw/test.csv")
+    
+    # Eliminar el campo 'id' del dataset de test
+    if 'id' in df_test.columns:
+        df_test = df_test.drop(columns=['id'])
+    
     # Guardar los datos procesados
-    df_processed.to_csv(os.path.join(output_path, 'df_train_proce.csv'), index=False)
-    print(f"Datos procesados guardados en {output_path}")
+    os.makedirs("../data/processed", exist_ok=True)
+    df_train.to_csv("../data/processed/df_train_processed.csv", index=False)
+    df_test.to_csv("../data/processed/df_test_processed.csv", index=False)
 
 if __name__ == "__main__":
-    input_path = "../data/raw"
-    output_path = "../data/processed"
-    process_data(input_path, output_path)
+    process_data()
+
