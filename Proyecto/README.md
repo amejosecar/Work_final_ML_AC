@@ -7,7 +7,7 @@
 
 
 
-# Mobile Price Prediction 📲
+# Predicción de precios de dispositivos móviles📲
 
 El precio 💵 de un teléfono se ha convertido en una necesidad en nuestra vida diaria y el precio de este depende de sus especificaciones. En este cuaderno, exploraremos los factores que afectan los precios de los teléfonos celulares y predeciremos nuevas muestras en función del mejor modelo.
 
