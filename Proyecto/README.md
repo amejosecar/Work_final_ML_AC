@@ -6,30 +6,37 @@
 
 
 
-# Trabajo final del modulo Machine Learning
- Bootcamp Lanbide-BBK 2024
+# Mobile Price Prediction 📲
 
-🏋🏻‍♀️ Este es el trabajo final del modulo Machine learning en The Bridge, del programa bootcamp 2024 de BBK y Lanbide. 
+El precio 💵 de un teléfono se ha convertido en una necesidad en nuestra vida diaria y el precio de este depende de sus especificaciones. En este cuaderno, exploraremos los factores que afectan los precios de los teléfonos celulares y predeciremos nuevas muestras en función del mejor modelo.
 
-👀 El objetivo es desarrollar un modelo predictivo para un caso de negocio basado en datos. El proyecto se divide en fases, incluyendo la obtención y preparación de datos, análisis exploratorio, selección de modelos y evaluación de resultados. Se deben presentar conclusiones y mejoras, documentando y justificando cada paso para asegurar la reproducibilidad y claridad del proyecto.
+El objetivo 🎯 es predecir el rango de precios de un teléfono móvil mediante la construcción de un modelo que tenga en cuenta varias características proporcionadas en el conjunto de datos. 
 
-➡️ [Ver más detalles del trabajo final.!](https://github.com/IraitzM/TheBridge_DSPT_ML/blob/main/Proyecto%20final/Enunciado.ipynb).
+Utilizaremos métodos de aprendizaje supervisado como árboles de decisión (DT), bosques aleatorios y máquinas de vectores de soporte (SVM) para determinar el mejor modelo para este problema.
 
+Descripción de la característica:
 
+1- 🔋 battery_power: Energía total que una batería puede almacenar en un tiempo medido en (mAh)
+2- bluetooth blue: Tiene bluetooth o no
+3- ⌚clock_speed: Velocidad a la que el microprocesador ejecuta instrucciones
+4- dual_sim: Tiene soporte dual sim o no
+5- 📸 fc: Cámara frontal (Megapixeles)
+6- 📶 four_g: Tiene 4G o no
+7- 📀 int_memory: Memoria interna en (Gigabytes)
+8- m_dep: Profundidad del móvil en (Cm)
+9- mobile_wt: Peso del móvil
+10- 🎞️ pc: Cámara principal (Megapixeles)
+11- px_height: Alto de resolución de píxeles
+12- px_width: Ancho de resolución de píxeles
+13- ram: Memoria de acceso aleatorio en (Megabytes)
+14- sc_h: Alto de pantalla del móvil en (Cm)
+15- sc_w: Ancho de pantalla del móvil en (Cm)
+16- talk_time: Tiempo máximo que durará una sola carga de batería cuando estás hablando constantemente por teléfono
+17- three_g: Tiene 3G o no
+18- touch_screen: Tiene pantalla táctil o no
+19- 🛜 wifi: Tiene wifi o no
+20- n_cores: Número de núcleos del procesador
+21- 🤑 price_range: Esta es la variable Target con valor 0: (Costo bajo), 1: (Costo medio), 2: (Costo alto) y 3: (Costo muy alto)
 
+Objective:
 
-Para clonar este repositorio por https:
-
-```
- 📑 git clone [https://github.com/amejosecar/Work_final_ML_AC]
-```  
-
-
-
-### Autores
-
-🤓 **Lead Instructor**: *Iraitz Montalbán*
-
-😎 **Teacher Assistant**: *Luis Miguel Andújar Baena*
-
-🥷🏻 **Alumno**: *Américo Carrillo*
