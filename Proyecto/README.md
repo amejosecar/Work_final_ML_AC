@@ -18,8 +18,7 @@ Descripción de la característica:
 
 1- 🔋 battery_power: Energía total que una batería puede almacenar en un tiempo medido en (mAh)
 
-2-   ![image](https://github.com/user-attachments/assets/5f7dcaf9-d977-4ee5-a564-eff61d4ead36)
-bluetooth blue: Tiene bluetooth o no
+2-   bluetooth blue: Tiene bluetooth o no
 
 3- ⌚clock_speed: Velocidad a la que el microprocesador ejecuta instrucciones
 
