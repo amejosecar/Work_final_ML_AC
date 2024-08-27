@@ -1,3 +1,10 @@
+
+
+
+![image](https://github.com/user-attachments/assets/ba7ba0e4-981d-4345-9314-8cc3dc638bfa)
+
+
+
 # Trabajo final del modulo Machine Learning
  Bootcamp Lanbide-BBK 2024
 
