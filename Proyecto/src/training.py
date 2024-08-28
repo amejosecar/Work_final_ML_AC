@@ -1,40 +1,61 @@
 import pandas as pd
-import joblib
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+import pickle  # Importa pickle para guardar el escalador y los modelos
 
-def train_models():
-    # Cargar datos procesados
-    X_train = pd.read_csv('data/processed/X_train_scaled.csv')
-    y_train = pd.read_csv('data/processed/y_train.csv').squeeze()
+def train_models(df_train, df_test_proce):
+    # Separación de características y target
+    X = df_train.drop('price_range', axis=1)
+    y = df_train['price_range']
 
-    # Dividir el conjunto de entrenamiento en entrenamiento y validación
-    X_train_split, X_val_split, y_train_split, y_val_split = train_test_split(
-        X_train, y_train, test_size=0.2, random_state=42
-    )
+    # Escalado de características
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    X_train, X_val, y_train, y_val = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
-    # Inicializar modelos
-    rf = RandomForestClassifier(n_estimators=100, random_state=42)
-    svc = SVC(probability=True, random_state=42)
-    gb = GradientBoostingClassifier(n_estimators=100, random_state=42)
-    lr = LogisticRegression(max_iter=1000, random_state=42)
+    # Guardar los datasets de entrenamiento y validación
+    pd.DataFrame(X_train).to_csv("../data/train/X_train.csv", index=False)
+    pd.DataFrame(X_val).to_csv("../data/train/X_val.csv", index=False)
+    pd.DataFrame(y_train).to_csv("../data/train/y_train.csv", index=False)
+    pd.DataFrame(y_val).to_csv("../data/train/y_val.csv", index=False)
 
-    # Entrenar modelos
-    rf.fit(X_train_split, y_train_split)
-    svc.fit(X_train_split, y_train_split)
-    gb.fit(X_train_split, y_train_split)
-    lr.fit(X_train_split, y_train_split)
+    # Preparación de los datos de test
+    X_test_scaled = scaler.transform(df_test_proce)
 
-    # Guardar modelos
-    joblib.dump(rf, 'models/random_forest_model.pkl')
-    joblib.dump(svc, 'models/svc_model.pkl')
-    joblib.dump(gb, 'models/gradient_boosting_model.pkl')
-    joblib.dump(lr, 'models/logistic_regression_model.pkl')
+    # Entrenamiento y evaluación de modelos
+    models = {
+        "Random Forest": RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42),
+        "SVC": SVC(C=1.0, kernel='rbf', probability=True, random_state=42),
+        "Gradient Boosting": GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, max_depth=5, random_state=42),
+        "Logistic Regression": LogisticRegression(C=1.0, solver='liblinear', random_state=42)
+    }
 
-    print("Modelos entrenados y guardados exitosamente.")
+    for model_name, model in models.items():
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_val)
+        print(f"{model_name} - Accuracy on Validation:", accuracy_score(y_val, y_pred))
+    
+    # Guardar los modelos entrenados
+    for i, (model_name, model) in enumerate(models.items(), start=1):
+        with open(f"../models/trained_model_{i}.pkl", 'wb') as f:
+            pickle.dump(model, f)
+
+    # Guardar el modelo final (elige el modelo que quieras como final, por ejemplo el RandomForest)
+    final_model = models["Random Forest"]  # Ajusta esto según el modelo final que elijas
+    with open("../models/final_model.pkl", 'wb') as f:
+        pickle.dump(final_model, f)
+
+    # Guardar el escalador
+    with open("../models/scaler.pkl", 'wb') as f:
+        pickle.dump(scaler, f)
+
+    return models, X_val, y_val, X_test_scaled
 
 if __name__ == "__main__":
-    train_models()
+    df_train = pd.read_csv("../data/train/train.csv")
+    df_test_proce = pd.read_csv("../data/processed/df_test_proce.csv")
+    models, X_val, y_val, X_test_scaled = train_models(df_train, df_test_proce)
