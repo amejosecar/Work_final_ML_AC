@@ -1,41 +1,44 @@
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+import os
 
-def process_data():
-    # Cargar datos
-    df_train = pd.read_csv('data/raw/train.csv')
-    df_test = pd.read_csv('data/raw/test.csv')
+def load_raw_data():
+    """Carga los datos en bruto desde la carpeta data/raw."""
+    train_path = "../data/raw/train.csv"
+    test_path = "../data/raw/test.csv"
+    
+    df_train = pd.read_csv(train_path)
+    df_test = pd.read_csv(test_path)
+    
+    return df_train, df_test
 
-    # Separación de características y target en el conjunto de entrenamiento
-    X_train = df_train.drop('price_range', axis=1)
-    y_train = df_train['price_range']
+def process_data(df):
+    """Realiza el procesamiento básico del DataFrame."""
+    # Eliminar filas con valores faltantes (puedes modificar según lo necesario)
+    df = df.dropna()
+    
+    # Si es necesario, añade otras transformaciones aquí
+    # Por ejemplo, normalización, codificación, etc.
+    
+    return df
 
-    # Eliminar la columna 'id' de df_train y df_test si está presente
-    if 'id' in X_train.columns:
-        X_train = X_train.drop('id', axis=1)
-    if 'id' in df_test.columns:
-        df_test = df_test.drop('id', axis=1)
+def save_processed_data(df_train, df_test):
+    """Guarda los datos procesados en la carpeta data/processed."""
+    processed_train_path = "../data/processed/processed_train.csv"
+    processed_test_path = "../data/processed/processed_test.csv"
+    
+    df_train.to_csv(processed_train_path, index=False)
+    df_test.to_csv(processed_test_path, index=False)
 
-    # El conjunto de prueba debe tener las mismas características que el conjunto de entrenamiento
-    X_test = df_test.copy()
-
-    # Escalado de características
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-
+def main():
+    # Cargar los datos
+    df_train, df_test = load_raw_data()
+    
+    # Procesar los datos
+    df_train = process_data(df_train)
+    df_test = process_data(df_test)
+    
     # Guardar los datos procesados
-    pd.DataFrame(X_train_scaled, columns=X_train.columns).to_csv('data/processed/X_train_scaled.csv', index=False)
-    pd.DataFrame(y_train).to_csv('data/processed/y_train.csv', index=False)
-    pd.DataFrame(X_test_scaled, columns=X_test.columns).to_csv('data/processed/X_test_scaled.csv', index=False)
-
-    # Guardar el target para el test set si es necesario (asumiendo que test.csv tiene 'price_range')
-    # Como mencionaste que 'test.csv' es solo para la predicción, puede que no tenga 'price_range'
-    # Por lo tanto, se podría omitir esta línea si no hay 'price_range' en test.csv
-    if 'price_range' in df_test.columns:
-        pd.DataFrame(df_test['price_range']).to_csv('data/processed/y_test.csv', index=False)
-
-    print("Datos procesados y guardados exitosamente.")
+    save_processed_data(df_train, df_test)
 
 if __name__ == "__main__":
-    process_data()
+    main()

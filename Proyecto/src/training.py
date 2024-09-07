@@ -1,40 +1,51 @@
 import pandas as pd
-import joblib
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
-from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+import pickle
+import os
 
-def train_models():
+def load_processed_data():
+    """Carga los datos procesados desde la carpeta data/processed."""
+    train_path = "../data/processed/processed_train.csv"
+    df_train = pd.read_csv(train_path)
+    return df_train
+
+def train_model(df_train):
+    """Entrena un modelo de RandomForest y devuelve el modelo entrenado."""
+    X = df_train.drop("price_range", axis=1)
+    y = df_train["price_range"]
+    
+    # Dividir los datos en conjuntos de entrenamiento y validación
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Entrenar un modelo RandomForest
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    
+    return model, X_train, X_val, y_train, y_val
+
+def save_model(model, model_name):
+    """Guarda el modelo entrenado en formato pickle en la carpeta models."""
+    model_path = f"../models/{model_name}.pkl"
+    with open(model_path, "wb") as file:
+        pickle.dump(model, file)
+
+def main():
     # Cargar datos procesados
-    X_train = pd.read_csv('data/processed/X_train_scaled.csv')
-    y_train = pd.read_csv('data/processed/y_train.csv').squeeze()
+    df_train = load_processed_data()
+    
+    # Entrenar modelo
+    model, X_train, X_val, y_train, y_val = train_model(df_train)
+    
+    # Guardar modelo entrenado
+    save_model(model, "trained_model")
+    
+    # Guardar datasets utilizados en el entrenamiento
+    X_train.to_csv("../data/train/X_train.csv", index=False)
+    X_val.to_csv("../data/test/X_val.csv", index=False)
+    y_train.to_csv("../data/train/y_train.csv", index=False)
+    y_val.to_csv("../data/test/y_val.csv", index=False)
 
-    # Dividir el conjunto de entrenamiento en entrenamiento y validación
-    X_train_split, X_val_split, y_train_split, y_val_split = train_test_split(
-        X_train, y_train, test_size=0.2, random_state=42
-    )
-
-    # Inicializar modelos
-    rf = RandomForestClassifier(n_estimators=100, random_state=42)
-    svc = SVC(probability=True, random_state=42)
-    gb = GradientBoostingClassifier(n_estimators=100, random_state=42)
-    lr = LogisticRegression(max_iter=1000, random_state=42)
-
-    # Entrenar modelos
-    rf.fit(X_train_split, y_train_split)
-    svc.fit(X_train_split, y_train_split)
-    gb.fit(X_train_split, y_train_split)
-    lr.fit(X_train_split, y_train_split)
-
-    # Guardar modelos
-    joblib.dump(rf, 'models/random_forest_model.pkl')
-    joblib.dump(svc, 'models/svc_model.pkl')
-    joblib.dump(gb, 'models/gradient_boosting_model.pkl')
-    joblib.dump(lr, 'models/logistic_regression_model.pkl')
-
-    print("Modelos entrenados y guardados exitosamente.")
 
 if __name__ == "__main__":
-    train_models()
+    main()
